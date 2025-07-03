@@ -10,9 +10,9 @@ the objective is to create a looping rotating figure that first
 
 
 Also, plan is:
-    Three.js version
-    OpenGL Java
-    Vulkan Java
-    OpenGL C++
-    Vulkan C++
-    Vulkan Rust
+    Three.js version,
+    OpenGL Java,
+    Vulkan Java,
+    OpenGL C++,
+    Vulkan C++,
+    Vulkan Rust,
