@@ -16,3 +16,8 @@ Also, plan is:
     OpenGL C++,
     Vulkan C++,
     Vulkan Rust,
+
+
+
+Its so funny trying to relearn threejs because I used it to create a neat little portfolio back in my sophomore year of high school during the spring time. It only took me three days yet this project - since the inclusion of more mathematics and problem solving - I wonder how long it will take for me to complete the threejs portion of this project.
+The ports to the different programming languages shouldn't be difficult whatsoever because I would have already completed the mathematics once the threejs version is done.
