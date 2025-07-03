@@ -2,7 +2,7 @@
   "name": "threejs",
   "version": "1.0.0",
   "description": "",
-  "main": "app.js",
+  "main": "main2.js",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
