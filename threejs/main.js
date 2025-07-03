@@ -8,16 +8,32 @@ renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 
 // Initial parameters
-let radius = .01;
+let radius = .02;
 const segments = 40;
 
-// Create initial geometry
-let geo = new THREE.CircleGeometry(radius, segments);
-const mat = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
-const circle = new THREE.Mesh(geo, mat);
-scene.add(circle);
+let π=3.14159
 
-camera.position.z = 5;
+
+let geo2 = new THREE.CylinderGeometry( 5, 5, 5, 32 ); 
+geo2.center();
+const mat2 = new THREE.MeshBasicMaterial( {color: 0x00ff00} ); 
+const cylinder = new THREE.Mesh( geo2, mat2 );
+cylinder.position.set(0,0,0)
+scene.add(cylinder);
+cylinder.rotation.z = π/2
+
+
+
+const geometry = new THREE.BoxGeometry( 1, 1, 1 ); 
+const material = new THREE.MeshBasicMaterial( {color: 0x00ff00} ); 
+const cube = new THREE.Mesh( geometry, material ); 
+//scene.add( cube );
+
+
+
+
+camera.position.z = 100;
+
 
 function animate() {
     // Increase radius
@@ -25,14 +41,17 @@ function animate() {
     //radius += 0.005;
     
     // Create a new geometry with the updated radius
-    const newGeo = new THREE.CircleGeometry(radius, segments);
+    //const newGeo = new THREE.CircleGeometry(radius, segments);
     
     // Replace the old geometry with the new one
-    circle.geometry.dispose(); // Important: clean up the old geometry
-    circle.geometry = newGeo;
+    //circle.geometry.dispose(); // Important: clean up the old geometry
+    //circle.geometry = newGeo;
     
     renderer.render(scene, camera);
     requestAnimationFrame(animate);
+    cube.rotation.x +=.01
+    cube.rotation.y +=.01
+    cube.rotation.z +=.01
 }
 
 animate();
