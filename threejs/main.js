@@ -106,11 +106,8 @@ function playClip(startTime, endTime, audioElement) {
     }
     
     // If metadata is already loaded, set up immediately
-    if (audioElement.readyState > 0) {
-        setupPlayback();
-    } else {
-        audioElement.addEventListener('loadedmetadata', setupPlayback);
-    }
+    if (audioElement.readyState > 0) {setupPlayback();} 
+    else {audioElement.addEventListener('loadedmetadata', setupPlayback);}
     
     function setupPlayback() {
         audioElement.currentTime = startTime;
@@ -121,7 +118,15 @@ function playClip(startTime, endTime, audioElement) {
 
 
 
-
+function genericMove(){
+    cube.rotation.x+=.01
+    cube.rotation.y+=.01
+    cube.rotation.z+=.01
+    individLoop=null
+    oldRotX = cube.rotation.x
+    oldRotY = cube.rotation.y
+    oldRotZ = cube.rotation.z
+}
 
 
 
@@ -143,27 +148,21 @@ function animate() {
         oldRotY=cube.rotation.y;
         oldRotZ=cube.rotation.z;
     }
+
+
     let rotationTime = (Date.now() - individLoop) / 1000;
 
 
     progress= rotationTime/1
     progress=easeFunc(progress)
 
-    console.log(progress)
 
     if(loopTime<1&&loopTime>0){
         cube.scale.x=.1
         cube.scale.y=.1
         cube.scale.z=.1
 
-        cube.rotation.x+=.01
-        cube.rotation.y+=.01
-        cube.rotation.z+=.01
-        individLoop=null
-        
-        oldRotX = cube.rotation.x
-        oldRotY = cube.rotation.y
-        oldRotZ = cube.rotation.z
+        genericMove()
     }
     if(loopTime<2&&loopTime>1){
         cube.rotation.x=oldRotX+(0-oldRotX)*progress
@@ -183,13 +182,7 @@ function animate() {
         directionalLight.position.z=initLightZ+cube.scale.z/2
         directionalLightHelper.position.z=initLightZ+cube.scale.z/2
 
-        cube.rotation.x+=.01
-        cube.rotation.y+=.01
-        cube.rotation.z+=.01
-        individLoop=null
-        oldRotX = cube.rotation.x
-        oldRotY = cube.rotation.y
-        oldRotZ = cube.rotation.z
+        genericMove()
     }
     if(loopTime>3&&loopTime<4){
         initCamZ=camera.position.z
@@ -210,13 +203,7 @@ function animate() {
         directionalLight.position.z=initLightZ+cube.scale.x/2
         directionalLightHelper.position.z=initLightZ+cube.scale.x/2
 
-        cube.rotation.x+=.01
-        cube.rotation.y+=.01
-        cube.rotation.z+=.01
-        individLoop=null
-        oldRotX = cube.rotation.x
-        oldRotY = cube.rotation.y
-        oldRotZ = cube.rotation.z
+        genericMove()
     }
     if(loopTime>5&&loopTime<6){
         initCamZ=camera.position.z
@@ -237,13 +224,7 @@ function animate() {
         directionalLight.position.z=initLightZ+cube.scale.y/2
         directionalLightHelper.position.z=initLightZ+cube.scale.y/2
 
-        cube.rotation.x+=.01
-        cube.rotation.y+=.01
-        cube.rotation.z+=.01
-        individLoop=null
-        oldRotX = cube.rotation.x
-        oldRotY = cube.rotation.y
-        oldRotZ = cube.rotation.z
+        genericMove()
     } 
     if(loopTime>7&&loopTime<8){
         initCamZ=camera.position.z
@@ -260,10 +241,7 @@ function animate() {
             play=false
         }
     }
-    if(loopTime>8){
-        animationStartLoop=null
-    }
-
+    if(loopTime>8){animationStartLoop=null}
 
     renderer.render(scene, camera);
 }
