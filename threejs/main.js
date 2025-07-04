@@ -66,8 +66,6 @@ let initLightZ=20
 camera.position.z = initCamZ;
 
 
-
-
 //The following variables are INDICATIVE OF WHEN THE PHASES END (FOR EXAMPLE: p1=1, MEANS (PHASE 1) ENDS AT loopTime=1)
 
 let p1=2
@@ -89,9 +87,54 @@ let oldRotY=0;
 let oldRotZ=0;
 let individLoop=null;
 
+
+
+
+//const audio = new Audio('sounds.mp3');
+const audio = new Audio('sounds2.mp3');
+
+function playClip(startTime, endTime, audioElement) {
+    // Remove any existing timeupdate listeners to prevent duplicates
+    audioElement.removeEventListener('timeupdate', handleTimeUpdate);
+    
+    function handleTimeUpdate() {
+        if (audioElement.currentTime >= endTime) {
+            audioElement.pause();
+            audioElement.currentTime = startTime; // Reset to start
+            audioElement.removeEventListener('timeupdate', handleTimeUpdate);
+        }
+    }
+    
+    // If metadata is already loaded, set up immediately
+    if (audioElement.readyState > 0) {
+        setupPlayback();
+    } else {
+        audioElement.addEventListener('loadedmetadata', setupPlayback);
+    }
+    
+    function setupPlayback() {
+        audioElement.currentTime = startTime;
+        audioElement.addEventListener('timeupdate', handleTimeUpdate);
+        audioElement.play().catch(e => console.error("Playback failed:", e));
+    }
+}
+
+
+
+
+
+
+
+let play=false
 function animate() {
+    function easeFunc(x){return (Math.pow((x*(2-x)),2))} //Converts my linear 'progress' values to whatever the power you set it to (this allows for easing)
+
     requestAnimationFrame(animate);
-    if (animationStartLoop === null) {animationStartLoop = Date.now();}
+    if (animationStartLoop === null) {
+        animationStartLoop = Date.now();
+        initCamZ=100
+        initLightZ=20
+    }
     let loopTime = (Date.now() - animationStartLoop) / 1000;
 
     if (individLoop === null) {
@@ -104,10 +147,9 @@ function animate() {
 
 
     progress= rotationTime/1
+    progress=easeFunc(progress)
 
-    
-
-    console.log(loopTime)
+    console.log(progress)
 
     if(loopTime<1&&loopTime>0){
         cube.scale.x=.1
@@ -118,6 +160,7 @@ function animate() {
         cube.rotation.y+=.01
         cube.rotation.z+=.01
         individLoop=null
+        
         oldRotX = cube.rotation.x
         oldRotY = cube.rotation.y
         oldRotZ = cube.rotation.z
@@ -126,9 +169,15 @@ function animate() {
         cube.rotation.x=oldRotX+(0-oldRotX)*progress
         cube.rotation.y=oldRotY+(0-oldRotY)*progress
         cube.rotation.z=oldRotZ+(0-oldRotZ)*progress
+        play=true
     }
     
     if(loopTime>2&&loopTime<3){
+        if(play){
+            //playClip(0.1, 0.7, audio);
+            playClip(.8, 1.25, audio);
+        }
+        play=false
         cube.scale.z=10
         camera.position.z=initCamZ+cube.scale.z/2
         directionalLight.position.z=initLightZ+cube.scale.z/2
@@ -145,11 +194,17 @@ function animate() {
     if(loopTime>3&&loopTime<4){
         initCamZ=camera.position.z
         initLightZ=directionalLight.position.z
-        cube.rotation.x=oldRotX+(0-oldRotX)*progress
+        cube.rotation.x=oldRotX+(pi-oldRotX)*progress
         cube.rotation.y=oldRotY+(pi/2-oldRotY)*progress
-        cube.rotation.z=oldRotZ+(0-oldRotZ)*progress
+        cube.rotation.z=oldRotZ+(pi-oldRotZ)*progress
+        play=true
     }
     if(loopTime>4&&loopTime<5){
+        if(play){
+            //playClip(0.9, 1.5, audio);
+            playClip(1.3, 1.8, audio);
+        }
+        play=false
         cube.scale.x=10
         camera.position.z=initCamZ+cube.scale.x/2
         directionalLight.position.z=initLightZ+cube.scale.x/2
@@ -169,8 +224,14 @@ function animate() {
         cube.rotation.x=oldRotX+(pi/2-oldRotX)*progress
         cube.rotation.y=oldRotY+(0-oldRotY)*progress
         cube.rotation.z=oldRotZ+(0-oldRotZ)*progress
+        play=true
     }
     if(loopTime>6&&loopTime<7){
+        if(play){
+            //playClip(2.7, 3, audio);
+            playClip(2, 2.4, audio);
+        }
+        play=false
         cube.scale.y=10
         camera.position.z=initCamZ+cube.scale.y/2
         directionalLight.position.z=initLightZ+cube.scale.y/2
@@ -183,15 +244,25 @@ function animate() {
         oldRotX = cube.rotation.x
         oldRotY = cube.rotation.y
         oldRotZ = cube.rotation.z
-    }
+    } 
     if(loopTime>7&&loopTime<8){
         initCamZ=camera.position.z
         initLightZ=directionalLight.position.z
         cube.rotation.x=oldRotX+(pi-oldRotX)*progress
         cube.rotation.y=oldRotY+(pi-oldRotY)*progress
         cube.rotation.z=oldRotZ+(pi-oldRotZ)*progress
+        allotTime(cube.scale,"x",0,animationDuration)
+        allotTime(cube.scale,"y",0,animationDuration)
+        allotTime(cube.scale,"z",0,animationDuration)
+        play=true
+        if(loopTime<7.2){
+            if(play){playClip(4.4, 5, audio);}
+            play=false
+        }
     }
-    if(loopTime>8){animationStartLoop=null}
+    if(loopTime>8){
+        animationStartLoop=null
+    }
 
 
     renderer.render(scene, camera);
