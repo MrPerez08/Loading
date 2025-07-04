@@ -21,6 +21,31 @@ const directionalLightHelper = new THREE.DirectionalLightHelper(directionalLight
 //BORDERRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR
 //--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
+//THIS IS THE NEW REFRESHING SEXY AND DELICIOUS allottime() function WITH OBJECT REFERENCE ABILITIES!!!!!
+function allotTime(object, property, targetValue, duration) {
+    // If animation hasn't started yet, initialize it
+    if (animationStartTime === null) {
+        animationStartTime = Date.now();
+        object.initialValue = object[property]; // Store initial value
+    }
+    
+    // Calculate elapsed time in seconds
+    const elapsedTime = (Date.now() - animationStartTime) / 1000;
+    
+    // If animation is still running
+    if (elapsedTime < duration) {
+        // Calculate progress (0 to 1)
+        const progress = elapsedTime / duration;
+        
+        // Interpolate the value (linear interpolation)
+        object[property] = object.initialValue + (targetValue - object.initialValue) * progress;
+    } else {
+        // Animation complete - ensure final value is set
+        object[property] = targetValue;
+        animationStartTime = null; // Reset for next animation
+    }
+    
+}
 
 let pi=Math.PI
 
@@ -98,9 +123,9 @@ function animate() {
         oldRotZ = cube.rotation.z
     }
     if(loopTime<2&&loopTime>1){
-        cube.rotation.x=oldRotX+(pi-oldRotX)*progress
-        cube.rotation.y=oldRotY+(pi-oldRotY)*progress
-        cube.rotation.z=oldRotZ+(pi-oldRotZ)*progress
+        cube.rotation.x=oldRotX+(0-oldRotX)*progress
+        cube.rotation.y=oldRotY+(0-oldRotY)*progress
+        cube.rotation.z=oldRotZ+(0-oldRotZ)*progress
     }
     
     if(loopTime>2&&loopTime<3){
@@ -120,9 +145,9 @@ function animate() {
     if(loopTime>3&&loopTime<4){
         initCamZ=camera.position.z
         initLightZ=directionalLight.position.z
-        cube.rotation.x=oldRotX+(pi-oldRotX)*progress
-        cube.rotation.y=oldRotY+(pi-oldRotY)*progress
-        cube.rotation.z=oldRotZ+(pi-oldRotZ)*progress
+        cube.rotation.x=oldRotX+(0-oldRotX)*progress
+        cube.rotation.y=oldRotY+(pi/2-oldRotY)*progress
+        cube.rotation.z=oldRotZ+(0-oldRotZ)*progress
     }
     if(loopTime>4&&loopTime<5){
         cube.scale.x=10
@@ -141,9 +166,9 @@ function animate() {
     if(loopTime>5&&loopTime<6){
         initCamZ=camera.position.z
         initLightZ=directionalLight.position.z
-        cube.rotation.x=oldRotX+(pi-oldRotX)*progress
-        cube.rotation.y=oldRotY+(pi-oldRotY)*progress
-        cube.rotation.z=oldRotZ+(pi-oldRotZ)*progress
+        cube.rotation.x=oldRotX+(pi/2-oldRotX)*progress
+        cube.rotation.y=oldRotY+(0-oldRotY)*progress
+        cube.rotation.z=oldRotZ+(0-oldRotZ)*progress
     }
     if(loopTime>6&&loopTime<7){
         cube.scale.y=10
