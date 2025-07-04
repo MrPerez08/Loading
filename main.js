@@ -117,6 +117,15 @@ function playClip(startTime, endTime, audioElement) {
 }
 
 
+// helper function that automatically calculates the next multiple of pi/2 that is JUST bigger than the angle the object is at
+
+function calcAutoRot(x){
+    let a=1;
+    while(pi/2 * a<x){a+=1};
+    return (pi/2*a)
+}
+    
+
 
 function genericMove(){
     cube.rotation.x+=.01
@@ -126,9 +135,14 @@ function genericMove(){
     oldRotX = cube.rotation.x
     oldRotY = cube.rotation.y
     oldRotZ = cube.rotation.z
+    xGotoRot = calcAutoRot(cube.rotation.x)
+    yGotoRot = calcAutoRot(cube.rotation.y)
+    zGotoRot = calcAutoRot(cube.rotation.z)
 }
 
-
+let xGotoRot = calcAutoRot(cube.rotation.x)
+let yGotoRot = calcAutoRot(cube.rotation.y)
+let zGotoRot = calcAutoRot(cube.rotation.z)
 
 let play=false
 function animate() {
@@ -187,9 +201,9 @@ function animate() {
     if(loopTime>3&&loopTime<4){
         initCamZ=camera.position.z
         initLightZ=directionalLight.position.z
-        cube.rotation.x=oldRotX+(pi-oldRotX)*progress
+        cube.rotation.x=oldRotX+(xGotoRot-oldRotX)*progress
         cube.rotation.y=oldRotY+(pi/2-oldRotY)*progress
-        cube.rotation.z=oldRotZ+(pi-oldRotZ)*progress
+        cube.rotation.z=oldRotZ+(zGotoRot-oldRotZ)*progress
         play=true
     }
     if(loopTime>4&&loopTime<5){
@@ -209,8 +223,8 @@ function animate() {
         initCamZ=camera.position.z
         initLightZ=directionalLight.position.z
         cube.rotation.x=oldRotX+(pi/2-oldRotX)*progress
-        cube.rotation.y=oldRotY+(0-oldRotY)*progress
-        cube.rotation.z=oldRotZ+(0-oldRotZ)*progress
+        cube.rotation.y=oldRotY+(yGotoRot-oldRotY)*progress
+        cube.rotation.z=oldRotZ+(zGotoRot-oldRotZ)*progress
         play=true
     }
     if(loopTime>6&&loopTime<7){
