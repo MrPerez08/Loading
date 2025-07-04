@@ -91,7 +91,7 @@ let individLoop=null;
 
 
 //const audio = new Audio('sounds.mp3');
-const audio = new Audio('sounds2.mp3');
+const audio = new Audio('assets/sounds2.mp3');
 
 function playClip(startTime, endTime, audioElement) {
     // Remove any existing timeupdate listeners to prevent duplicates
