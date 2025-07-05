@@ -21,31 +21,6 @@ const directionalLightHelper = new THREE.DirectionalLightHelper(directionalLight
 //BORDERRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR
 //--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-//THIS IS THE NEW REFRESHING SEXY AND DELICIOUS allottime() function WITH OBJECT REFERENCE ABILITIES!!!!!
-function allotTime(object, property, targetValue, duration) {
-    // If animation hasn't started yet, initialize it
-    if (animationStartTime === null) {
-        animationStartTime = Date.now();
-        object.initialValue = object[property]; // Store initial value
-    }
-    
-    // Calculate elapsed time in seconds
-    const elapsedTime = (Date.now() - animationStartTime) / 1000;
-    
-    // If animation is still running
-    if (elapsedTime < duration) {
-        // Calculate progress (0 to 1)
-        const progress = elapsedTime / duration;
-        
-        // Interpolate the value (linear interpolation)
-        object[property] = object.initialValue + (targetValue - object.initialValue) * progress;
-    } else {
-        // Animation complete - ensure final value is set
-        object[property] = targetValue;
-        animationStartTime = null; // Reset for next animation
-    }
-    
-}
 
 let pi=Math.PI
 
@@ -68,24 +43,12 @@ camera.position.z = initCamZ;
 
 //The following variables are INDICATIVE OF WHEN THE PHASES END (FOR EXAMPLE: p1=1, MEANS (PHASE 1) ENDS AT loopTime=1)
 
-let p1=2
-let p2=4
-let p3=6
-let p4=8
-let p5=10
 
 
 let animationStartLoop =null;
 let animationStartTime = null;
 const animationDuration = 1; // seconds
 
-const targetScale = 10; // your target scale
-
-let progress=0;
-let oldRotX=0;
-let oldRotY=0;
-let oldRotZ=0;
-let individLoop=null;
 
 
 
@@ -119,143 +82,148 @@ function playClip(startTime, endTime, audioElement) {
 
 // helper function that automatically calculates the next multiple of pi/2 that is JUST bigger than the angle the object is at
 
-function calcAutoRot(x){
-    let a=1;
-    while(pi/2 * a<x){a+=1};
-    return (pi/2*a)
+
+
+
+function allotTime(object, property, targetValue, duration) {
+    // If animation hasn't started yet, initialize it
+    if (animationStartTime === null) {
+        animationStartTime = Date.now();
+        object.initialValue = object[property]; // Store initial value
+    }
+    
+    // Calculate elapsed time in seconds
+    const elapsedTime = (Date.now() - animationStartTime) / 1000;
+    
+    // If animation is still running
+    if (elapsedTime < duration) {
+        // Calculate progress (0 to 1)
+        const progress = elapsedTime / duration;
+        
+        // Interpolate the value (linear interpolation)
+        object[property] = object.initialValue + (targetValue - object.initialValue) * progress;
+    } else {
+        // Animation complete - ensure final value is set
+        object[property] = targetValue;
+        animationStartTime = null; // Reset for next animation
+    }
+    
 }
     
+let progress=0;
+let oldRotX=0;
+let oldRotY=0;
+let oldRotZ=0;
+let individLoop=null;
 
 
-function genericMove(){
-    cube.rotation.x+=.01
-    cube.rotation.y+=.01
-    cube.rotation.z+=.01
-    individLoop=null
-    oldRotX = cube.rotation.x
-    oldRotY = cube.rotation.y
-    oldRotZ = cube.rotation.z
-    xGotoRot = calcAutoRot(cube.rotation.x)
-    yGotoRot = calcAutoRot(cube.rotation.y)
-    zGotoRot = calcAutoRot(cube.rotation.z)
+const phaseLength=1
+let switcher = true
+let p1=phaseLength
+let p2=phaseLength*2
+let p3=phaseLength*3
+let p4=phaseLength*4
+let p5=phaseLength*5
+
+
+function needToRotate(object, mx,my,mz) {
+    object.rotation.x=oldRotX+(mx-oldRotX)*progress
+    object.rotation.y=oldRotY+(my-oldRotY)*progress
+    object.rotation.z=oldRotZ+(mz-oldRotZ)*progress
 }
 
-let xGotoRot = calcAutoRot(cube.rotation.x)
-let yGotoRot = calcAutoRot(cube.rotation.y)
-let zGotoRot = calcAutoRot(cube.rotation.z)
+function easeFunc(x){return (Math.pow((x*(2-x)),.5))}   //Converts my linear 'progress' values to whatever the power you set it to (this allows for easing)
 
-let play=false
+
+
+let currentPhase = 0; // Track phases explicitly
+
 function animate() {
-    function easeFunc(x){return (Math.pow((x*(2-x)),2))} //Converts my linear 'progress' values to whatever the power you set it to (this allows for easing)
-
     requestAnimationFrame(animate);
+    const now = Date.now();
+
+    // Initialize animation
     if (animationStartLoop === null) {
-        animationStartLoop = Date.now();
-        initCamZ=100
-        initLightZ=20
-    }
-    let loopTime = (Date.now() - animationStartLoop) / 1000;
-
-    if (individLoop === null) {
-        individLoop = Date.now();
-        oldRotX=cube.rotation.x;
-        oldRotY=cube.rotation.y;
-        oldRotZ=cube.rotation.z;
+        animationStartLoop = now;
+        initCamZ = 100;
+        initLightZ = 20;
     }
 
+    const loopTime = (now - animationStartLoop) / 1000;
 
-    let rotationTime = (Date.now() - individLoop) / 1000;
-
-
-    progress= rotationTime/1
-    progress=easeFunc(progress)
-
-
-    if(loopTime<1&&loopTime>0){
-        cube.scale.x=.1
-        cube.scale.y=.1
-        cube.scale.z=.1
-
-        genericMove()
+    // Detect phase changes
+    if (loopTime < p1 && currentPhase !== 1) {
+        currentPhase = 1;
+        individLoop = now; // Reset timer for Phase 1
+        oldRotX = cube.rotation.x;
+        oldRotY = cube.rotation.y;
+        oldRotZ = cube.rotation.z;
+        cube.scale.set(.1, .1, .1);
+    } 
+    else if (loopTime >= p1 && loopTime < p2 && currentPhase !== 2) {
+        currentPhase = 2;
+        individLoop = now; // Reset timer for Phase 2
+        oldRotX = cube.rotation.x;
+        oldRotY = cube.rotation.y;
+        oldRotZ = cube.rotation.z;
+        cube.scale.z = 10;
+        camera.position.z = initCamZ + cube.scale.z / 2;
+        directionalLight.position.z = initLightZ + cube.scale.z / 2;
     }
-    if(loopTime<2&&loopTime>1){
-        cube.rotation.x=oldRotX+(0-oldRotX)*progress
-        cube.rotation.y=oldRotY+(0-oldRotY)*progress
-        cube.rotation.z=oldRotZ+(0-oldRotZ)*progress
-        play=true
-    }
-    
-    if(loopTime>2&&loopTime<3){
-        if(play){
-            //playClip(0.1, 0.7, audio);
-            playClip(.8, 1.25, audio);
-        }
-        play=false
-        cube.scale.z=10
-        camera.position.z=initCamZ+cube.scale.z/2
-        directionalLight.position.z=initLightZ+cube.scale.z/2
-        directionalLightHelper.position.z=initLightZ+cube.scale.z/2
-
-        genericMove()
-    }
-    if(loopTime>3&&loopTime<4){
-        initCamZ=camera.position.z
-        initLightZ=directionalLight.position.z
-        cube.rotation.x=oldRotX+(xGotoRot-oldRotX)*progress
-        cube.rotation.y=oldRotY+(pi/2-oldRotY)*progress
-        cube.rotation.z=oldRotZ+(zGotoRot-oldRotZ)*progress
-        play=true
-    }
-    if(loopTime>4&&loopTime<5){
-        if(play){
-            //playClip(0.9, 1.5, audio);
-            playClip(1.3, 1.8, audio);
-        }
-        play=false
+    else if (loopTime >= p2 && loopTime < p3 && currentPhase !== 3) {
+        currentPhase = 3;
+        individLoop = now; // Reset timer for Phase 2
+        oldRotX = cube.rotation.x;
+        oldRotY = cube.rotation.y;
+        oldRotZ = cube.rotation.z;
         cube.scale.x=10
         camera.position.z=initCamZ+cube.scale.x/2
         directionalLight.position.z=initLightZ+cube.scale.x/2
         directionalLightHelper.position.z=initLightZ+cube.scale.x/2
-
-        genericMove()
     }
-    if(loopTime>5&&loopTime<6){
-        initCamZ=camera.position.z
-        initLightZ=directionalLight.position.z
-        cube.rotation.x=oldRotX+(pi/2-oldRotX)*progress
-        cube.rotation.y=oldRotY+(yGotoRot-oldRotY)*progress
-        cube.rotation.z=oldRotZ+(zGotoRot-oldRotZ)*progress
-        play=true
-    }
-    if(loopTime>6&&loopTime<7){
-        if(play){
-            //playClip(2.7, 3, audio);
-            playClip(2, 2.4, audio);
-        }
-        play=false
+    else if (loopTime >= p3 && loopTime < p4 && currentPhase !== 4) {
+        currentPhase = 4;
+        individLoop = now; // Reset timer for Phase 2
+        oldRotX = cube.rotation.x;
+        oldRotY = cube.rotation.y;
+        oldRotZ = cube.rotation.z;
         cube.scale.y=10
         camera.position.z=initCamZ+cube.scale.y/2
         directionalLight.position.z=initLightZ+cube.scale.y/2
         directionalLightHelper.position.z=initLightZ+cube.scale.y/2
-
-        genericMove()
-    } 
-    if(loopTime>7&&loopTime<8){
-        initCamZ=camera.position.z
-        initLightZ=directionalLight.position.z
-        cube.rotation.x=oldRotX+(pi-oldRotX)*progress
-        cube.rotation.y=oldRotY+(pi-oldRotY)*progress
-        cube.rotation.z=oldRotZ+(pi-oldRotZ)*progress
+    }
+    else if (loopTime >= p4 && loopTime < p5 && currentPhase !== 5) {
+        currentPhase = 5;
+        individLoop = now; // Reset timer for Phase 2
+        oldRotX = cube.rotation.x;
+        oldRotY = cube.rotation.y;
+        oldRotZ = cube.rotation.z;
         allotTime(cube.scale,"x",0,animationDuration)
         allotTime(cube.scale,"y",0,animationDuration)
         allotTime(cube.scale,"z",0,animationDuration)
-        play=true
-        if(loopTime<7.2){
-            if(play){playClip(4.4, 5, audio);}
-            play=false
-        }
     }
-    if(loopTime>8){animationStartLoop=null}
+
+
+    // Calculate progress (smooth over phase duration)
+    const rotationTime = (now - individLoop) / 1000;
+    progress = easeFunc(Math.min(rotationTime / phaseLength, 1)); // Clamp to [0, 1]
+
+    // Apply rotations
+    if (currentPhase === 1) {
+        needToRotate(cube, 0, 0, 0); // Phase 1 target rotation
+    } 
+    else if (currentPhase === 2) {
+        needToRotate(cube, 0,pi/2, 0); // Phase 2 target rotation
+    }else if (currentPhase ===3){
+        needToRotate(cube, pi/2,2*pi/2, 0);
+    }
+    else if (currentPhase === 4){
+        needToRotate(cube, 2*pi/2,2*pi/2, pi/2);
+    }
+    
+
+    // Loop animation
+    if (loopTime > p4) animationStartLoop = null;
 
     renderer.render(scene, camera);
 }
