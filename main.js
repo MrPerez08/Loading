@@ -117,8 +117,7 @@ let oldRotZ=0;
 let individLoop=null;
 
 
-const phaseLength=1
-let switcher = true
+const phaseLength=1.5
 let p1=phaseLength
 let p2=phaseLength*2
 let p3=phaseLength*3
@@ -132,7 +131,7 @@ function needToRotate(object, mx,my,mz) {
     object.rotation.z=oldRotZ+(mz-oldRotZ)*progress
 }
 
-function easeFunc(x){return (Math.pow((x*(2-x)),.5))}   //Converts my linear 'progress' values to whatever the power you set it to (this allows for easing)
+function easeFunc(x){return (Math.pow((x*(2-x)),2))}   //Converts my linear 'progress' values to whatever the power you set it to (this allows for easing)
 
 
 
@@ -198,9 +197,6 @@ function animate() {
         oldRotX = cube.rotation.x;
         oldRotY = cube.rotation.y;
         oldRotZ = cube.rotation.z;
-        allotTime(cube.scale,"x",0,animationDuration)
-        allotTime(cube.scale,"y",0,animationDuration)
-        allotTime(cube.scale,"z",0,animationDuration)
     }
 
 
@@ -210,20 +206,27 @@ function animate() {
 
     // Apply rotations
     if (currentPhase === 1) {
-        needToRotate(cube, 0, 0, 0); // Phase 1 target rotation
+        needToRotate(cube, 0,0,0); // Phase 1 target rotation
     } 
     else if (currentPhase === 2) {
-        needToRotate(cube, 0,pi/2, 0); // Phase 2 target rotation
+        needToRotate(cube, 0,pi/2,0); // line rotations   
     }else if (currentPhase ===3){
-        needToRotate(cube, pi/2,2*pi/2, 0);
+        needToRotate(cube, pi/2,pi/2,0); // square rotations
     }
     else if (currentPhase === 4){
-        needToRotate(cube, 2*pi/2,2*pi/2, pi/2);
+        needToRotate(cube, pi/2,pi/2,pi/2); // cube rotations
     }
+    else if (currentPhase === 5){
+        needToRotate(cube, 0,0,0);
+        allotTime(cube.scale,"x",0,phaseLength)
+        allotTime(cube.scale,"y",0,phaseLength)
+        allotTime(cube.scale,"z",0,phaseLength)
+    }
+    
     
 
     // Loop animation
-    if (loopTime > p4) animationStartLoop = null;
+    if (loopTime > p5) animationStartLoop = null;
 
     renderer.render(scene, camera);
 }
