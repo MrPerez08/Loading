@@ -131,7 +131,7 @@ function needToRotate(object, mx,my,mz) {
     object.rotation.z=oldRotZ+(mz-oldRotZ)*progress
 }
 
-function easeFunc(x){return (Math.pow((x*(2-x)),2))}   //Converts my linear 'progress' values to whatever the power you set it to (this allows for easing)
+function easeFunc(x){return (Math.pow((x*(2-x)),1))}   //Converts my linear 'progress' values to whatever the power you set it to (this allows for easing)
 
 
 
@@ -209,12 +209,12 @@ function animate() {
         needToRotate(cube, 0,0,0); // Phase 1 target rotation
     } 
     else if (currentPhase === 2) {
-        needToRotate(cube, 0,pi/2,0); // line rotations   
+        needToRotate(cube, 2*pi/2,3*pi/2,0); // line rotations   
     }else if (currentPhase ===3){
-        needToRotate(cube, pi/2,pi/2,0); // square rotations
+        needToRotate(cube, 3*pi/2,5*pi/2,2*pi/2); // square rotations
     }
     else if (currentPhase === 4){
-        needToRotate(cube, pi/2,pi/2,pi/2); // cube rotations
+        needToRotate(cube, 5*pi/2,6*pi/2,3*pi/2); // cube rotations
     }
     else if (currentPhase === 5){
         needToRotate(cube, 0,0,0);
